@@ -1,1 +1,1 @@
-# -Equipo_2
+# Equipo_2
