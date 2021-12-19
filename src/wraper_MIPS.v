@@ -3,31 +3,30 @@ module wraper_MIPS
 	input MAX10_CLK1_50,
 	//////lED///////
 	output[7:0] LEDR,
-	
 	//////SW ///////
-	input [9:9] SW
+	input [9:0] SW
 );
-wire c0_sig;
-wire RCO;
+wire clk;
+wire clk_hz;
 
-Clock_Gen	Clock_Gen_inst (
+Clock_Gen	Clock_Gen_inst (			//PLL
 	.inclk0 ( MAX10_CLK1_50 ),
-	.c0 ( c0_sig )
+	.c0 ( clk )
 	);
 	
 cont_1s_RCO
 	(
-	.mclk(c0_sig), 
-	.reset(SW),
-	.RCO(RCO)  // Ripple Carry Output
+	.mclk(clk), 
+	.reset(SW[9]),
+	.RCO(clk_hz)  								// Ripple Carry Output
   	);
 
 data_path 
 (
-.clk(RCO), 
-.reset(SW),
-.zero(),
-.GPIO(LEDR)
+.clk(clk_hz), 
+.reset(SW[9]),
+.GPIO_i(SW[7:0]),
+.GPIO_o(LEDR[7:0])
 ); 
 
 endmodule
