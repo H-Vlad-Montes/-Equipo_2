@@ -15,3 +15,4 @@
 *.qip
 transcript
 !*.sof
+**/src/PLL/greybox_tmp/**

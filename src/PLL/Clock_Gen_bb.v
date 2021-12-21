@@ -31,15 +31,15 @@
 //Intel and sold by Intel or its authorized distributors.  Please
 //refer to the applicable agreement for further details, at
 //https://fpgasoftware.intel.com/eula.
-
-module Clock_Gen (
-	inclk0,
-	c0);
-
-	input	  inclk0;
-	output	  c0;
-
-endmodule
+//
+//module Clock_Gen (
+//	inclk0,
+//	c0);
+//
+//	input	  inclk0;
+//	output	  c0;
+//
+//endmodule
 
 // ============================================================
 // CNX file retrieval info
