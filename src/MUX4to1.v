@@ -10,7 +10,7 @@ parameter WIDTH = 32
    output reg [WIDTH-1:0] SrcB
 
 );
-reg [WIDTH-1:0] value = 32'b0000_0000_0000_0000_0000_0000_0000_0100;
+//reg [WIDTH-1:0] value = 32'b0000_0000_0000_0000_0000_0000_0000_0100;
 
 	localparam S0 = 2'b00;
    localparam S1 = 2'b01;
@@ -23,7 +23,7 @@ always @ (*)
 			default:
 				SrcB = a;
          S1: begin
-            SrcB = value;
+            SrcB = b;
          end
          S2: begin
             SrcB = c;

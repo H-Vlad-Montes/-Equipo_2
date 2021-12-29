@@ -17,6 +17,6 @@ end
 initial begin 
 	#0 reset_tb = 0;
 	#2 reset_tb = 1;
-	GPIO_i_tb = 8'h3;
+	GPIO_i_tb = 8'b00000011;
 end 
 endmodule

@@ -1,5 +1,5 @@
 module Zero_extend #(
-	parameter WIDTH_i = 8,
+	parameter WIDTH_i = 16,
 	parameter WIDTH_o = 32
 )
 (
@@ -7,5 +7,5 @@ module Zero_extend #(
 	output wire	[WIDTH_o-1:0] Zero_Ext
 );
 
-assign Zero_Ext = { {24{1'b0}}, GPIO_i};
+assign Zero_Ext = { {16{1'b0}}, GPIO_i};
 endmodule

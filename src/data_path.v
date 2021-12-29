@@ -18,7 +18,6 @@ module data_path #(
 	wire [WIDTH-1:0] ReadData_o;
 	wire [4:0] A3_o;					
 	wire zero_1;
-    	wire selector_zero;
 	wire [WIDTH-1:0] ALUResult;
 	wire [WIDTH-1:0] ALU_o;
 	wire [WIDTH-1:0] RD1_i;
@@ -40,7 +39,7 @@ module data_path #(
 	wire IorD;			
 	wire MemWrite;	
 	wire IRWrite;		
-	wire RegDst;		
+	wire [1:0]RegDst;		
 	wire MemtoReg;	
 	wire RegWrite;	
 	wire PCSrc;
@@ -48,8 +47,10 @@ module data_path #(
    wire branch;
    wire AND_o;
 	wire jump_select;
-
-
+   wire [1:0]selector_zero;
+	wire enable_GPIO_o;
+	wire [7:0] mult_out;
+	wire [7:0] GPIO_Reg;
 
 	registro_pc PC (
 	.d(PC_source_o), 					//input
@@ -97,13 +98,15 @@ module data_path #(
 	.Data_out(WD3_i)
 	);
 	
-	mux2to1
-	#(.DATA_WIDTH(5)) A3( 
-	.x(ffrd_o [15:11]), //rt_A2
-	.y(ffrd_o [20:16]), //rd_A3
-	.Sel(RegDst),
-	.Data_out(A3_o)
+	MUX4to1 #(.WIDTH(5))A3(
+	.a(ffrd_o [20:16]),   
+	.b(ffrd_o [15:11]),						
+	.c(5'b11111), //31
+    .d(5'b00000),
+	.selec(RegDst),
+   .SrcB(A3_o)					//output to monitor 
 	);
+
 	
 	reg_file reg_file(
 	.clk(clk),
@@ -142,9 +145,9 @@ module data_path #(
 	
 	MUX4to1 Src(
 	.a(RD2_o),   
-	.b(32'h4),						
+	.b(32'b0000_0000_0000_0000_0000_0000_0000_0100),						
 	.c(Mux_SZ_Ext_o),
-	.d(Mux_SZ_Ext_o << 2),
+	.d({Mux_SZ_Ext_o [29:0], 2'b0}),
 	.selec(ALUSrcB),
    .SrcB(SrcB)					//output to monitor 
 	);
@@ -162,7 +165,15 @@ module data_path #(
 	.clk(clk),
 	.reset(reset),
 	.enable(1'b1),
-	.q(ALU_o)					//output SrcB input to MUX4to1_00
+	.q(ALU_o)					//output 
+	);
+	
+	ff #(.WHIDT(8)) GPIO_out (
+	.d(GPIO_Reg), 			//input
+	.clk(clk),
+	.reset(reset),
+	.enable(enable_GPIO_o),
+	.q(mult_out)					//output 
 	);
 	
 	mux2to1 ALU_result( 
@@ -187,16 +198,18 @@ module data_path #(
 
     //ZERO EXTEND
     Zero_extend 		ZE_EXT(
-    .GPIO_i(GPIO_i), 
+    .GPIO_i(ffrd_o [15:0]), ////////////////////GPIO
     .Zero_Ext(Zero_Extend_o));
 
-    //MUX TO DECIDE IF GPIO OR SIGN EXTEND
-	mux2to1 GPIO_SIGN( 
-	.x(Zero_Extend_o), 
-	.y(sign_extend_o), 	
-	.Sel(selector_zero),
-	.Data_out(Mux_SZ_Ext_o)					
+	MUX4to1 GPIO_SIGN(
+	.a(sign_extend_o),   
+	.b(Zero_Extend_o),						
+	.c( {ffrd_o [15:0], {16{1'b0}} }), ///////LUI
+	.d({{24{GPIO_i[7]}},GPIO_i}),
+	.selec(selector_zero),
+   .SrcB(Mux_SZ_Ext_o)					//output to monitor 
 	);
+
 
 	//state machin
 	unit_control FSM 
@@ -218,12 +231,14 @@ module data_path #(
 	.PCWrite(PC_Write),
 	.branch(branch),
 	.ALUSrcB(ALUSrcB),
-	.ALUControl(ALUControl) 
+	.ALUControl(ALUControl),
+	.GPIO_o(enable_GPIO_o)
 	);
 and Comp1 (AND_o, branch, zero_1);
 or Comp2 (PC_enable, PC_Write, AND_o);
 
 //datapath output to gpio
 
-assign GPIO_o = ALU_o[7:0];
+assign GPIO_Reg = ALU_o[7:0];
+assign GPIO_o = mult_out [7:0]; 
 endmodule

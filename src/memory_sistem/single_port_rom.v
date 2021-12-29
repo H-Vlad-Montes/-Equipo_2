@@ -12,7 +12,7 @@ module single_port_rom #(
 	
 	initial 
 	begin 
-		$readmemh("C:/PROJECTS/archi/Data_Path/assembly_code/T7-1.dat",rom);
+		$readmemh("C:/Users/endgels/Documents/GitHub/Equipo_2/assembly_code/T8.dat",rom);
 	end
 	
 	always @ (addr,x)

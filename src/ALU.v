@@ -5,8 +5,7 @@ module ALU
 (
 
 input          [2:0]   select,
-input          [WIDTH-1:0]  a,
-input          [WIDTH-1:0]  b,
+input          [WIDTH-1:0]  a,b,
 output					 zero,
 output reg		[WIDTH-1:0]  y
 
@@ -20,9 +19,9 @@ case (select)
 3'b010:	y = a & b;
 3'b011:	y = a | b;
 3'b100: 	y = a ^ b;
-3'b101:	y = a << 1;
-3'b110:	y = a >> 1;			
-3'b111:	y = a ~^ b;           
+3'b101:	y = (a < b) ? 32'h01 : 32'h00;
+3'b110:	y = a * b;			
+3'b111:	y = a;           
 default:		y = 4'b0;
 endcase
 		z = (y == 32'h0) ? 1 : 0;

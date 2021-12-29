@@ -23,10 +23,10 @@ cont_1s_RCO
 
 data_path 
 (
-.clk(clk_hz), 
-.reset(SW[9]),
-.GPIO_i(SW[7:0]),
-.GPIO_o(LEDR[7:0])
+	.clk(clk_hz), 
+	.reset(SW[9]),
+	.GPIO_i(SW[7:0]),
+	.GPIO_o(LEDR[7:0])
 ); 
 
 endmodule
