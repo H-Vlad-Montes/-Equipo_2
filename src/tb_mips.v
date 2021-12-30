@@ -1,6 +1,6 @@
 module tb_mips;
 	reg clk_tb = 0;
-	reg reset_tb ;
+	reg reset_tb = 0;
 	reg [7:0]GPIO_i_tb;
 	wire [7:0]GPIO_o_tb;
 data_path #(
@@ -17,6 +17,6 @@ end
 initial begin 
 	#0 reset_tb = 0;
 	#2 reset_tb = 1;
-	GPIO_i_tb = 8'h3;
+	GPIO_i_tb = 8'b00000010;
 end 
 endmodule
