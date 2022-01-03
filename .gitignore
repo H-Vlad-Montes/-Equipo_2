@@ -11,7 +11,7 @@
 *.mti
 *.mpf
 *.qws
-*.ppf
-*.qip
+# *.ppf
+# *.qip
 transcript
 !*.sof
